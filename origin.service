@@ -3,7 +3,7 @@ Description=OpenShift Origin
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/origin start
+ExecStart=/usr/bin/origin start --dns='tcp://0.0.0.0:8053'
 Type=notify
 Restart=always
 
