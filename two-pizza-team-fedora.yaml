@@ -77,10 +77,8 @@ spec:
         # Simple netcat command to pull redhat-release from disk and serve it over port 3306
         # Runs on non-privileged port 8080 to improve security. The Kubernetes service will
         # NAT it to port 80 for regular connection from curl
-        command: ['/bin/bash', '-c', 'while true; do /usr/bin/nc -l -p 8080 -c "curl $DATABASE"; done']
+        command: ['/bin/bash', '-c', 'while true; do /usr/bin/nc -l -p 8080 -c "curl $CHEESE_PIZZA_SERVICE_HOST:$CHEESE_PIZZA_SERVICE_PORT"; done']
         env:
-          - name: DATABASE
-            value: $CHEESE_PIZZA_SERVICE_HOST:$CHEESE_PIZZA_SERVICE_PORT
         ports:
           - containerPort: 8080
             name: pepperoni-pizza
