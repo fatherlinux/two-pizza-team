@@ -1,0 +1,11 @@
+[Unit]
+Description=OpenShift Origin
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/origin start
+Type=notify
+Restart=always
+
+[Install]
+WantedBy=default.target
