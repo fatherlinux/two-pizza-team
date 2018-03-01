@@ -1,0 +1,13 @@
+#
+# Version 1
+
+# Pull from fedora Base Image
+FROM fedora
+
+MAINTAINER Scott McCarty smccarty@redhat.com
+
+# Update the image
+RUN yum update -y
+
+# Output
+# ENTRYPOINT tail /var/log/yum.log
