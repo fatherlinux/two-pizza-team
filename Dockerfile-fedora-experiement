@@ -7,7 +7,7 @@ FROM fedora
 MAINTAINER Scott McCarty smccarty@redhat.com
 
 # Update the image
-RUN yum install nmap-ncat
+RUN yum -y install nmap-ncat
 
 # Output
 # ENTRYPOINT tail /var/log/yum.log
