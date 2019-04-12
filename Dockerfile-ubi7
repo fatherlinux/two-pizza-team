@@ -1,0 +1,13 @@
+#
+# Version 1
+
+# Pull from fedora Base Image
+FROM registry.access.redhat.com/ubi7-dev-preview/ubi
+
+MAINTAINER Scott McCarty smccarty@redhat.com
+
+# Update the image
+RUN yum -y install nmap-ncat
+
+# Output
+# ENTRYPOINT tail /var/log/yum.log
