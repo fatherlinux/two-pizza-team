@@ -7,9 +7,8 @@ FROM registry.access.redhat.com/ubi7-dev-preview/ubi-minimal
 MAINTAINER Scott McCarty smccarty@redhat.com
 
 # Update the image
-RUN yum -y install nmap-ncat && yum clean all
+RUN microdnf --enablerepo=rhel-7-server-rpms install -y nmap-ncat
 RUN echo "Hi! I'm a database. Get in ma bellie!!!" > /srv/hello.txt
-
 
 # Output
 EXPOSE 3306
