@@ -52,7 +52,7 @@ spec:
       - name: cheese-pizza
         image: quay.io/fatherlinux/linux-container-internals-2-0-introduction
         # Simple netcat command to pull redhat-release from disk and serve it over port 3306
-        command: ['/bin/bash', '-c', 'while true; do /usr/bin/nc -l -p 3306 < /etc/redhat-release; done']
+        command: ['/bin/bash', '-c', 'while true; do /usr/bin/nc -l -p 3306 < /srv/hello.txt; done']
         ports:
           - containerPort: 3306
             name: cheese-pizza
