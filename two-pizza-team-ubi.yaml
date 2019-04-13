@@ -1,0 +1,102 @@
+# Written By: Scott McCarty
+# Date: 02/15/2018
+# Description: Simple two replication controllers which use standard RHEL images to deliver front end/back end
+# application. The connection looks like this client -> pepperoni-pizza:80 -> cheese-pizza:3306 which is similar to a
+# standard web application using apache and mysql. I chose to use only netcat so that very simple images 
+# could be used. Also, you talk to pepperoni, but cheese gets the work don :-)
+ 
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: cheese-pizza 
+    app: two-pizza-team
+  name: cheese-pizza
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3306
+  selector:
+    app: cheese-pizza
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  labels: 
+    app: pepperoni-pizza
+    app: two-pizza-team
+  name: pepperoni-pizza
+spec: 
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: pepperoni-pizza
+  selector: 
+    app: pepperoni-pizza
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: cheese-pizza
+  labels:
+    app: cheese-pizza
+    app: two-pizza-team
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cheese-pizza
+    spec:
+      containers:
+      - name: cheese-pizza
+        image: quay.io/fatherlinux/linux-container-internals-2-0-introduction
+        # Simple netcat command to pull redhat-release from disk and serve it over port 3306
+        command: ['/bin/bash', '-c', 'while true; do /usr/bin/nc -l -p 3306 < /etc/redhat-release; done']
+        ports:
+          - containerPort: 3306
+            name: cheese-pizza
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: pepperoni-pizza
+  labels:
+    app: pepperoni-pizza
+    app: two-pizza-team
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: pepperoni-pizza
+    spec:
+      containers:
+      - name: pepperoni-pizza
+        image: quay.io/fatherlinux/linux-container-internals-2-0-introduction
+        # Simple netcat command to pull redhat-release from disk and serve it over port 3306
+        # Runs on non-privileged port 8080 to improve security. The Kubernetes service will
+        # NAT it to port 80 for regular connection from curl
+        command: ['/bin/bash', '-c', 'while true; do /usr/bin/nc -l -p 8080 -c "curl $DATABASE_HOST:3306"; done']
+        env:
+          - name: DATABASE_HOST
+            value: cheese-pizza 
+        ports:
+          - containerPort: 8080
+            name: pepperoni-pizza
+---
+apiVersion: v1
+kind: Route
+metadata:
+  labels:
+    app: pepperoni-pizza
+    app: two-pizza-team
+  name: pepperoni-pizza
+spec:
+  host: pepperoni-pizza.example.com
+  to:
+    kind: Service
+    name: pepperoni-pizza
+    weight: 10    
+status: {}
+---
