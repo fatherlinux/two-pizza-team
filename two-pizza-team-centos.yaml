@@ -97,5 +97,6 @@ spec:
   to:
     kind: Service
     name: pepperoni-pizza
+    weight: 10    
 status: {}
 ---
